@@ -17,6 +17,7 @@ int sock_array[MAX_CONN];
 void DieWithError(char *errorMessage)
 {
 	printf("%s\n", errorMessage);
+	exit(1);
 }
 
 int main(int argc, char *argv[])
@@ -40,7 +41,10 @@ int main(int argc, char *argv[])
     }
 
     servIP = argv[1];             /* First arg: server IP address (dotted quad) */
-    echoString = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    if (argc == 3)
+        echoString = argv[2];
+    else 
+        echoString = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
     if (argc == 4)
         echoServPort = atoi(argv[3]); /* Use given port, if any */
@@ -80,6 +84,11 @@ int main(int argc, char *argv[])
 
     printf("\n");    /* Print a final linefeed */
 
-    close(sock);
+    for (i = 0; i < MAX_CONN; i++) {
+        sock = sock_array[i];
+        if (sock > 0)
+            close(sock);
+    }
+
     exit(0);
 }
